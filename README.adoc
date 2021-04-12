@@ -10,12 +10,16 @@ jpm build
 jpm install
 ----
 
-== Dependencies
+== Build-Time Dependencies
+
+* https://janet-lang.org/[janet]
+* https://github.com/janet-lang/argparse
+* https://github.com/andrewchambers/janet-sh
+
+== Runtime Dependencies
 
 * setsid from util-linux
 ** `setsid -f` is used by buku-fzf
-* https://github.com/janet-lang/argparse
-* https://github.com/andrewchambers/janet-sh
 * https://github.com/jarun/buku[buku]
 * https://github.com/junegunn/fzf[fzf]
 
