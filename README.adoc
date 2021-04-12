@@ -16,3 +16,11 @@ jpm install
 ** `setsid -f` is used by buku-fzf
 * https://github.com/janet-lang/argparse
 * https://github.com/andrewchambers/janet-sh
+
+== Screenshot
+
+image:screenshot.png[]
+
+This is a screnshot of buku-fzf on a terminal emulator.
+For convenience, you can map a keyboard shortcut to launching buku-fzf on
+a terminal emulator.

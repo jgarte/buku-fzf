@@ -5,10 +5,10 @@
 (def- description
   ``
   Choose `buku` bookmarks in fzf. Open them in web browser.
-  Bookmarks with `torbrowser` tag are opened in tor browser.
 
-  If the value of browser command in --browser and --browser-tag contains
+  If the value of browser command in --browser or --browser-tag contains
   spaces, surround the values of the options in double quotes.
+  For example, buku-fzf -b "firefox --new-tab"
 
   --browser-tag associates a certain buku bookmark tag with a certain
   browser command. --browser-tag can be specified multiple times in order
