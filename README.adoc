@@ -16,6 +16,8 @@ jpm install
 ** `setsid -f` is used by buku-fzf
 * https://github.com/janet-lang/argparse
 * https://github.com/andrewchambers/janet-sh
+* https://github.com/jarun/buku[buku]
+* https://github.com/junegunn/fzf[fzf]
 
 == Screenshot
 
