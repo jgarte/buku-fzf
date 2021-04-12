@@ -1,0 +1,18 @@
+= buku-fzf
+
+Choose buku bookmarks on fzf. Open them in browsers of your choice.
+For details, read `buku-fzf --help`.
+
+== Build
+
+----
+jpm build
+jpm install
+----
+
+== Dependencies
+
+* setsid from util-linux
+** `setsid -f` is used by buku-fzf
+* https://github.com/janet-lang/argparse
+* https://github.com/andrewchambers/janet-sh
