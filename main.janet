@@ -4,7 +4,7 @@
 
 (def- description
   ``
-  Choose `buku` bookmarks on fzf. Open them in web browsers of your choice.
+  Choose buku bookmarks on fzf. Open them in web browsers of your choice.
   To select multiple bookmarks, press tab or shift+tab.
 
   If the value of browser command in --browser or --browser-tag contains
@@ -97,7 +97,7 @@
                            (sh/$< buku -p ;indices -f 20))
           openUrl (fn [browser url]
                     (os/execute (reduce |(array/push $0 $1)
-                                        @["setsid" "-f"]
+                                        @["setsid" "-f" "nohup"]
                                         (array/push (array ;browser) url))
                                 :p
                                 {:out devnull :err devnull}))]

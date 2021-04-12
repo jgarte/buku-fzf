@@ -18,8 +18,9 @@ jpm install
 
 == Runtime Dependencies
 
-* setsid from util-linux
+* setsid from util-linux or any other package that contains setsid
 ** `setsid -f` is used by buku-fzf
+* nohup from coreutils or any other package that contains nohup
 * https://github.com/jarun/buku[buku]
 * https://github.com/junegunn/fzf[fzf]
 
