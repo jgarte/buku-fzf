@@ -6,8 +6,8 @@
   ``
   Choose buku bookmarks on fzf. Open them in web browsers of your choice.
   To select multiple bookmarks, press tab or shift+tab.
-  buku-fzf does exact match on fzf. To do fuzzy match, prefix a search term
-  with a single quote such as 'search-term instead of search-term.
+  buku-fzf does exact match on fzf. To do fuzzy match, use a search term
+  with a prefixed single quote such as 'search-term instead of search-term.
 
   If the value of --browser or --browser-tag contains
   spaces, surround the values of the options in double quotes.
