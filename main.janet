@@ -22,22 +22,21 @@
   buku-fzf -b "firefox --new-tab"
   buku-fzf -b firefox -t "torbrowser,torbrowser --allow-remote"
   buku-fzf -b firefox -t chromium,chormium -t brave,brave-bin
+  buku-fzf -b firefox -t chromium,chormium -t "brave browser,brave-bin"
   ``)
 
 (defn- get-bookmarks
   []
-  (->> (peg/match '{:column
-                    (some (if-not (+ "\t" "\n") 1))
-                    :entry (group (* ':column "\t"
-                                     ':column "\t"
-                                     ':column "\n"))
-                    :main (some :entry)}
-                  (sh/$< buku -p -f 5))
+  (->> (sh/$< buku -p -f 5)
+       (peg/match '{:column (some (if-not (+ "\t" "\n") 1))
+                    :main (some (group (* ':column "\t"
+                                          ':column "\t"
+                                          ':column "\n")))})
        (map |(let [[index title tags] $]
                (string/format "%s\t%s\t(%s)"
                               index title tags)))
        (|(string/join $ "\n"))))
-
+ 
 (defn- parse-opts
   []
   (when-let [{"browser" browser "browser-tag" browser-tags}
@@ -49,52 +48,45 @@
                           :short "b"}
                "browser-tag" {:kind :accumulate
                               :help
-                              "Format: \"browser-tag,browser command\""
+                              "Format: \"browser tag,browser command\""
                               :short "t"})]
-    {"browser" (peg/match '(* '(some (if-not " " 1))
-                              (any (* (some " ")
-                                      '(some (if-not " " 1)))))
-                          browser)
-     "browser-tags"
-     (if (not (nil? browser-tags))
-       (let [browser-tag-peg
-             '(* '(some (if-not "," 1))
-                 ","
-                 (group (* '(some (if-not (+ "," " ") 1))
-                           (any (* (some " ")
-                                   '(some (if-not (+ "," " ") 1)))))))]
+    (let [tag-word '(some (if-not (+ "," " ") 1))
+          tag ~(* ,tag-word (any (* " " ,tag-word)))
+          arg '(some (if-not " " 1))
+          cmd ~(* ',arg (any (* (some " ") ',arg)))]
+      {"browser" (peg/match cmd browser)
+       "browser-tags"
+       (when browser-tags
          (->> browser-tags
-              (map |(if-let [browser-tag (peg/match browser-tag-peg $)]
+              (map |(if-let [browser-tag (peg/match ~(* ',tag "," (group ,cmd))
+                                                    $)]
                       browser-tag
-                      (do
-                        (print (string/format
-                                 "'%s' is an invalid value for --browser-tag."
-                                 $))
-                        (os/exit 1))))
+                      (error (string/format
+                               "'%s' is an invalid value for --browser-tag."
+                               $))))
               (reduce (fn [acc [k v]]
                         (put acc k v))
-                      @{})))
-       {})}))
+                      @{})))})))
 
 (defn main
   [& args]
-  (when-let [{"browser" browser "browser-tags" browser-tags} (parse-opts)
-             indices
-             (try
-               (peg/match
-                 '(some (* '(some :d+)
-                           (some (if-not "\n" 1))
-                           "\n"))
-                 (sh/$< fzf -e -m +s --layout=reverse < ,(get-bookmarks)))
+  (when-let
+    [{"browser" browser "browser-tags" browser-tags} (parse-opts)
+     indices (try
+               (->> (sh/$< fzf -e -m +s --layout=reverse < ,(get-bookmarks))
+                    (peg/match '(some (* '(some :d+)
+                                         (some (if-not "\n" 1))
+                                         "\n"))))
                ([_]))]
-    (let [devnull (os/open "/dev/null" :w)
-          urls-with-tags (peg/match
-                           '{:url (some (if-not "\t" 1))
-                             :tag (some (if-not (+ "," "\n") 1))
-                             :tags (group (* ':tag
-                                             (any (* "," ':tag))))
-                             :main (some (group (* ':url "\t" :tags "\n")))}
-                           (sh/$< buku -p ;indices -f 20))
+    (let [urls-with-tags
+          (->> (sh/$< buku -p ;indices -f 20)
+               (peg/match '{:url (some (if-not "\t" 1))
+                            :tag (some (if-not (+ "," "\n") 1))
+                            :tags (group (* ':tag
+                                            (any (* "," ':tag))))
+                            :main (some (group (* ':url "\t"
+                                                  :tags "\n")))}))
+          devnull (os/open "/dev/null" :w)
           openUrl (fn [browser url]
                     (os/execute (reduce |(array/push $0 $1)
                                         @["setsid" "-f" "nohup"]
@@ -102,6 +94,8 @@
                                 :p
                                 {:out devnull :err devnull}))]
       (loop [[url tags] :in urls-with-tags]
-        (if-let [tagged-browser (some |(get browser-tags $) tags)]
-          (openUrl tagged-browser url)
+        (if browser-tags
+          (if-let [tagged-browser (some |(get browser-tags $) tags)]
+            (openUrl tagged-browser url)
+            (openUrl browser url))
           (openUrl browser url))))))
