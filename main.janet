@@ -7,7 +7,7 @@
   Choose buku bookmarks on fzf. Open them in web browsers of your choice.
   To select multiple bookmarks, press tab or shift+tab.
 
-  If the value of browser command in --browser or --browser-tag contains
+  If the value of --browser or --browser-tag contains
   spaces, surround the values of the options in double quotes.
   For example, buku-fzf -b "firefox --new-tab"
 
