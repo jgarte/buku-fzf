@@ -21,8 +21,8 @@
   Example commands:
   buku-fzf -b "firefox --new-tab"
   buku-fzf -b firefox -t "torbrowser,torbrowser --allow-remote"
-  buku-fzf -b firefox -t chromium,chormium -t brave,brave-bin
-  buku-fzf -b firefox -t chromium,chormium -t "brave browser,brave-bin"
+  buku-fzf -b firefox -t chromium,chromium -t brave,brave-bin
+  buku-fzf -b firefox -t chromium,chromium -t "brave browser,brave-bin"
   ``)
 
 (defn- get-bookmarks
