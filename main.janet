@@ -17,6 +17,11 @@
   browser command. --browser-tag can be specified multiple times in order
   to define multiple tags associated with different web browsers.
 
+  For example,
+  if you execute buku-fzf -b firefox -t "torbrowser,torbrowser --allow-remote",
+  any bookmark with torbrowser tag is opened with
+  torbrowser --allow-remote bookmark-url
+
   Note that browser commands currently don't support quotes for simplicity.
   Thus, buku-fzf -b "firefox --option1 \"abc abc\"" doesn't work.
 
