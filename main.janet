@@ -27,6 +27,21 @@
   buku-fzf -b firefox -t chromium,chromium -t "brave browser,brave-bin"
   ``)
 
+(defn- format-bookmarks
+  [raw-bookmarks]
+  (if-let [parsed-bookmarks (peg/match
+                              '{:column (some (if-not (+ "\t" "\n") 1))
+                                :main (some (group (* ':column "\t"
+                                                      ':column "\t"
+                                                      ':column "\n")))}
+                              raw-bookmarks)]
+    (string/join (map |(let [[index title tags] $]
+                         (string/format "%s\t%s\t(%s)"
+                                        index title tags))
+                      parsed-bookmarks)
+                 "\n")
+    (error "Failed to parse bookmarks.")))
+
 (defn- get-cached-bookmarks
   []
   (when-let [home (os/getenv "HOME")
@@ -38,7 +53,7 @@
                     :modified))]
     (let [cache-dir (string home "/.cache")
           cache (string cache-dir "/buku-fzf")
-          update-cache |(let [bookmarks (sh/$< buku -p -f 5)]
+          update-cache |(let [bookmarks (format-bookmarks (sh/$< buku -p -f 5))]
                           (when (not (os/stat cache-dir))
                             (os/mkdir cache-dir))
                           (if-with [f (file/open cache :w)]
@@ -52,22 +67,6 @@
             (file/read f :all)
             (error (string "Cannot read " cache))))
         (update-cache)))))
-
-(defn- format-bookmarks
-  []
-  (when-let [cached-bookmarks (get-cached-bookmarks)]
-    (if-let [parsed-bookmarks (peg/match
-                                '{:column (some (if-not (+ "\t" "\n") 1))
-                                  :main (some (group (* ':column "\t"
-                                                        ':column "\t"
-                                                        ':column "\n")))}
-                                cached-bookmarks)]
-      (string/join (map |(let [[index title tags] $]
-                           (string/format "%s\t%s\t(%s)"
-                                          index title tags))
-                        parsed-bookmarks)
-                   "\n")
-      (error "Failed to parse bookmarks."))))
 
 (defn- parse-opts
   []
@@ -104,7 +103,7 @@
   [& args]
   (when-let
     [{"browser" browser "browser-tags" browser-tags} (parse-opts)
-     bookmarks (format-bookmarks)
+     bookmarks (get-cached-bookmarks)
      indices (try
                (->> (sh/$< fzf -e -m +s --layout=reverse < ,bookmarks)
                     (peg/match '(some (* '(some :d+)
