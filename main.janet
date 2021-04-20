@@ -126,7 +126,7 @@
           devnull (os/open "/dev/null" :w)
           openUrl (fn [browser url]
                     (os/execute (reduce |(array/push $0 $1)
-                                        @["setsid" "-f" "nohup"]
+                                        @["nohup" "setsid" "-f"]
                                         (array/push (array ;browser) url))
                                 :p
                                 {:out devnull :err devnull}))]
