@@ -9,3 +9,8 @@
   :name "buku-fzf"
   :entry "main.janet"
   :install true)
+
+(declare-executable
+  :name "buku-fzf-cached-bookmarks"
+  :entry "cached-bookmarks.janet"
+  :install true)
