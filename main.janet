@@ -72,9 +72,7 @@
                       (error (string/format
                                "'%s' is an invalid value for --browser-tag."
                                $))))
-              (reduce (fn [acc [k v]]
-                        (put acc k v))
-                      @{})))
+              from-pairs))
        "query" query
        "bind" bind
        "bookmarks" bookmarks})))
@@ -111,7 +109,7 @@
           openUrl (fn [browser url]
                     (os/execute (reduce |(array/push $0 $1)
                                         @["nohup" "setsid" "-f"]
-                                        (array/push (array ;browser) url))
+                                        (array/concat browser [url]))
                                 :p
                                 {:out devnull :err devnull}))]
       (loop [[url tags] :in urls-with-tags]
