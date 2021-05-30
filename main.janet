@@ -100,7 +100,7 @@
                                            "\n"))))
                  ([_])))]
     (let [urls-with-tags
-          (->> (sh/$< buku -p ;indices -f 20)
+          (->> (sh/$< buku --nostdin -p ;indices -f 20)
                (peg/match '{:url (some (if-not "\t" 1))
                             :tag (some (if-not (+ "," "\n") 1))
                             :tags (group (* ':tag

@@ -27,7 +27,8 @@
                     :modified))]
     (let [cache-dir (string home "/.cache")
           cache (string cache-dir "/buku-fzf")
-          update-cache |(let [bookmarks (format-bookmarks (sh/$< buku -p -f 5))]
+          update-cache |(let [bookmarks (format-bookmarks
+                                          (sh/$< buku --nostdin -p -f 5))]
                           (when (not (os/stat cache-dir))
                             (os/mkdir cache-dir))
                           (if-with [f (file/open cache :w)]
