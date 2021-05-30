@@ -22,6 +22,7 @@ jpm install
 ** `setsid -f` is used by buku-fzf
 * nohup from coreutils or any other package that contains nohup
 * https://github.com/jarun/buku[buku]
+** 4.6 or 5b171fc9b33d14f575ac427c6674bc2f3cc4df93
 * https://github.com/junegunn/fzf[fzf]
 
 == Screenshot
