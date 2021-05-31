@@ -109,7 +109,7 @@
           openUrl (fn [browser url]
                     (os/execute (reduce |(array/push $0 $1)
                                         @["nohup" "setsid" "-f"]
-                                        (array/concat browser [url]))
+                                        (array ;browser url))
                                 :p
                                 {:out devnull :err devnull}))]
       (loop [[url tags] :in urls-with-tags]
