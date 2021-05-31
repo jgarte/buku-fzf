@@ -36,7 +36,7 @@
                             (error (string "Cannot write to " cache)))
                           bookmarks)]
       (if-let [cache-modified (get (os/stat cache) :modified)]
-        (if (<= cache-modified db-modified)
+        (if (< cache-modified db-modified)
           (update-cache)
           (if-with [f (file/open cache :r)]
             (file/read f :all)
