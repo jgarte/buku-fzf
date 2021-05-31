@@ -13,6 +13,7 @@ jpm install
 == Build-Time Dependencies
 
 * https://janet-lang.org/[janet]
+** 1.16.0
 * https://github.com/janet-lang/argparse
 * https://github.com/andrewchambers/janet-sh
 
