@@ -93,7 +93,7 @@
                                 (map |(string "--bind=" $) bind)
                                 [])
                              < (sh/$< buku-fzf-cached-bookmarks))
-                      (peg/match '(some (* '(some :d+)
+                      (peg/match '(some (* ':d+
                                            (some (if-not "\n" 1))
                                            "\n"))))
                  ([_])))]
