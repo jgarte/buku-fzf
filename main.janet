@@ -104,16 +104,12 @@
                             :tags (group (* ':tag
                                             (any (* "," ':tag))))
                             :main (some (group (* ':url "\t"
-                                                  :tags "\n")))}))
-          devnull (os/open "/dev/null" :w)
+                                                  (at-most 1 :tags) "\n")))}))
           openUrl (fn [browser url]
-                    (os/execute (reduce |(array/push $0 $1)
-                                        @["nohup" "setsid" "-f"]
-                                        (array ;browser url))
-                                :p
-                                {:out devnull :err devnull}))]
+                    (sh/$ nohup setsid -f ;browser ,url
+                          > :null > [stderr :null]))]
       (loop [[url tags] :in urls-with-tags]
-        (if browser-tags
+        (if (and tags browser-tags)
           (if-let [tagged-browser (some |(get browser-tags $) tags)]
             (openUrl tagged-browser url)
             (openUrl browser url))

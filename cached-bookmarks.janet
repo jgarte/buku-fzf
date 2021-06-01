@@ -7,12 +7,16 @@
                               '{:column (some (if-not (+ "\t" "\n") 1))
                                 :main (some (group (* ':column "\t"
                                                       ':column "\t"
-                                                      ':column "\n")))}
+                                                      (at-most 1 ':column)
+                                                      "\n")))}
                               raw-bookmarks)]
     (let [digits (inc (math/floor (math/log10 (length parsed-bookmarks))))]
       (string/join (map |(let [[index title tags] $]
                            (string/format
-                             (string "%-" digits "s %s (%s)")
+                             (string "%-" digits
+                                     (if tags
+                                       "s %s (%s)"
+                                       "s %s"))
                              index title tags))
                         parsed-bookmarks)
                    "\n"))
