@@ -9,11 +9,13 @@
                                                       ':column "\t"
                                                       ':column "\n")))}
                               raw-bookmarks)]
-    (string/join (map |(let [[index title tags] $]
-                         (string/format "%s\t%s\t(%s)"
-                                        index title tags))
-                      parsed-bookmarks)
-                 "\n")
+    (let [digits (inc (math/floor (math/log10 (length parsed-bookmarks))))]
+      (string/join (map |(let [[index title tags] $]
+                           (string/format
+                             (string "%-" digits "s %s (%s)")
+                             index title tags))
+                        parsed-bookmarks)
+                   "\n"))
     (error "Failed to parse bookmarks.")))
 
 (defn- get-cached-bookmarks
