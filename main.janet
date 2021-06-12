@@ -1,4 +1,5 @@
 #!/usr/bin/env janet
+# kakoune: filetype=janet
 (import sh)
 (import argparse)
 
@@ -40,7 +41,7 @@
 (defn- parse-opts
   []
   (when-let [{"browser" browser "browser-tag" browser-tags "query" query
-              "bind" bind :default bookmarks}
+              "bind" bind "prompt" prmpt :default bookmarks}
              (argparse/argparse
                description
                "browser" {:kind :option
@@ -57,6 +58,9 @@
                "bind" {:kind :accumulate
                        :help "This option is passed to fzf"
                        :short "B"}
+               "prompt" {:kind :option
+                         :help "fzf prompt"
+                         :short "p"}
                :default {:kind :accumulate})]
     (let [tag-word '(some (if-not (+ "," " ") 1))
           tag ~(* ,tag-word (any (* " " ,tag-word)))
@@ -75,17 +79,21 @@
               from-pairs))
        "query" query
        "bind" bind
-       "bookmarks" bookmarks})))
+       "bookmarks" bookmarks
+       "prompt" prmpt})))
 
 (defn main
   [& args]
   (when-let
     [{"browser" browser "browser-tags" browser-tags "query" query
-      "bookmarks" bookmarks "bind" bind} (parse-opts)
+      "bookmarks" bookmarks "bind" bind "prompt" prmpt} (parse-opts)
      indices (if bookmarks
                bookmarks
                (try
                  (->> (sh/$< fzf -e -m +s --layout=reverse
+                             ;(if prmpt
+                                [(string "--prompt=" prmpt)]
+                                [])
                              ;(if query
                                 [(string "--query=" query)]
                                 [])
